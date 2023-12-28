@@ -1,0 +1,82 @@
+<HTML>
+	<?php
+	if(isset($_SESSION['user_id']) AND isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Logout please.');</script>";
+		echo "<script>location.href='index.php'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Signup</TITLE>
+	<HEAD>
+		<li>
+		Menu : Sign up<br>
+		</li>
+		<?php
+			$id=$_GET['id'];
+			$name=$_GET['name'];
+			$result=$_GET['result'];
+		?>
+		<script>
+			function chk_id_func()
+			{
+				var id=document.getElementById("id").value;
+				var name=document.getElementById("name").value;
+				window.location.href='signup_chk_id.php?id='+id+'&name='+name;
+			}
+		</script>
+	</HEAD>
+	<BODY>
+		<form action="./signup.php" method="post">	
+		<fieldset>
+			<legend>Signup Form</legend>
+			<p>
+				<label class="title" for="name">Name : </label>
+				<?php
+					echo "<input type='text' name='name' id='name' size='12' value=$name>";
+				?>
+				<label class="title" for="id">id : </label>
+				<?php
+					echo "<input type='text' name='id' id='id' size='12' value=$id";
+					if($id)
+					{
+						echo " readonly>";
+					}else
+					{
+						echo ">";
+					}
+				?>
+				<div class='s_button'><input type="button" value="Check" onclick="chk_id_func()">
+				<?php
+				if($result=='fail')
+				{
+					echo "&nbsp<a class='checkmsg'>Already exists this id.</a>";
+				} elseif($result)
+				{
+					echo "&nbsp<a class='checkmsg_success'>Enable this id.</a>";
+				} elseif(!$result)
+				{
+					echo "&nbsp<a class='checkmsg'>Please check id.</a>";
+				}
+				?></div><br>
+				<label class="title" for="alias">Alias : </label>
+				<input type="text" name="alias" id="alias" size="12">
+				<label class="title" for="pw">Password : </label>
+				<input type="password" name="pw" id="pw" size="12">
+				<label class="title" for="phone">Phone Number : (include '-')</label>
+				<input type="text" name="phone" id="phone" size="12" maxlength="13">
+			</p>
+			<p><br />
+				<?php
+					echo "<input type='submit' value='Sign Up'";
+					if($result=='success')
+					{
+						echo ">";
+					}else
+					{
+						echo " disabled=''>";
+					}
+				?>
+			</fieldset>
+	</form>
+	</BODY>
+</HTML>

@@ -1,0 +1,132 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	
+	<TITLE>PHP Bank - Transfer</TITLE>
+	<HEAD>
+		<script>
+			function chk_account_func()
+			{
+				var acc=document.getElementById("chk_account").value;
+				var amount=document.getElementById("amount").value
+				window.location.href='transfer_chk_account.php?toAcc='+acc+'&amount='+amount;
+			}
+		</script>
+		<li>
+		Menu : Transfer<br>
+		</li>
+	</HEAD>
+	<BODY>
+	<div class="description"># This menu used when you need to trasnfer amount to someone.</div>
+		
+	<form action="./transfer.php" method="POST">	
+		<fieldset>
+			<legend>Transfer Form</legend>
+			<p>
+				<label for="fromAcc" class="title">From Account : </label>
+				<select name="fromAcc" id="fromAcc">
+					<?php
+						include 'config/database.php';
+						$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+						if(!$conn){
+							echo "<script>alert('DB Server Connect Fail');</script>";
+							echo "<script>locastion.href='index.php?page=inquery'</script>";
+						}
+
+						$stmt=$conn->stmt_init();
+						$stmt=$conn->prepare("select Account from Accounts where Proprietor_ID=? and Proprietor_Name=?");
+						$stmt->bind_param('ss', $_SESSION['user_id'], $_SESSION['user_name']);
+						$stmt->execute();
+						$result=$stmt->get_result();
+
+						while($data=$result->fetch_assoc())
+						{
+							$account=$data['Account'];
+							echo "<option value=".$account.">$account</option>";
+							
+						}
+					?>
+				</select>
+			</p>
+			<p>
+				<?php
+					$name=$_GET['name'];
+					$toAcc=$_GET['toAcc'];
+				?>
+				<label class="title" for="toAcc">To Account : </label>
+				
+				<?php
+					echo "<input type='text' name='toAcc' id='chk_account' size='12' value=$toAcc ";
+					if($toAcc)
+					{
+						echo " readonly>";
+					}else
+					{
+						echo ">";
+					}
+				?>
+
+				<div class='s_button'><input type="button" value="Check" onclick="chk_account_func()"/>
+				<?php
+				if($name=='fail')
+				{
+					echo "&nbsp<a class='checkmsg'>Not exist account.</a>";
+				} elseif($name)
+				{
+					echo "&nbsp<a class='checkmsg_success'>Confirmed by ".$name."'s account.</a>";
+				} elseif(!$name)
+				{
+					echo "&nbsp<a class='checkmsg'>Please check account.</a>";
+				}
+				
+				?>
+				</div>
+				<br>
+				<label class="title" for="amount">Amount : </label>
+				<input type="text" name="amount" id="amount" size="12">
+				<label class="title" for="pw">Password : </label>
+				<input type="password" name="pw" id="pw" size="12">
+				
+				<?php
+					echo "<br /><input type='submit' value='Transfer'";
+					if($name=='fail')
+					{
+						echo " disabled=''>";
+					} elseif ($name)
+					{
+						$stmt=$conn->stmt_init();
+						$stmt=$conn->prepare("select Name from Members where Name=? and (Account1=? or Account2=? or Account3=?)");
+						$stmt->bind_param('ssss', $name, $toAcc, $toAcc, $toAcc);
+						$stmt->execute();
+						$result=$stmt->get_result();
+						$data=$result->fetch_assoc();
+
+						if($data['Name'])
+						{
+							echo " >";
+						} else
+						{
+							echo " disabled=''>";
+							echo "<script>alert('Wrong access.');</script>";
+							echo "<script>location.href='index.php?page=transfer'</script>";
+						}
+						$stmt->close();
+						$conn->close();
+					} else
+					{
+						echo " disabled=''>";
+					}
+				?>
+			</p>
+		</fieldset>
+	</form>
+	
+	</BODY>
+</HTML>
+

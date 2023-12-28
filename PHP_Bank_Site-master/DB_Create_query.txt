@@ -1,0 +1,88 @@
+#데이터베이스 생성
+Create Database php_bank;
+
+Use php_bank;
+
+#Members 테이블 생성
+Create table Members(
+Name varchar(20) NOT NULL,
+ID varchar(30) NOT NULL,
+Alias varchar(30),
+PW varchar(40) NOT NULL,
+Phone_Number char(13) NOT NULL,
+Account1 char(15),
+Account2 char(15),
+Account3 char(15),
+Valid_Insurance varchar(50),
+PRIMARY KEY(ID)
+);
+
+#Accounts 테이블 생성
+Create table Accounts(
+Account char(12) NOT NULL,
+Account_PW varchar(40) NOT NULL,
+Proprietor_ID varchar(30) NOT NULL,
+Proprietor_Name varchar(20) NOT NULL,
+Balance varchar(20) NOT NULL,
+Primary Key(Account)
+);
+
+#Log 테이블 생성
+Create table Log(
+ID varchar(30) NOT NULL,
+Log text NOT NULL,
+date date,
+time time
+);
+
+#Insurances 테이블 생성
+Create table Insurances(
+Number int Not null,
+Name varchar(50) Not null,
+Detail text,
+Price varchar(20) Not null,
+Period varchar(10) Not null,
+Primary key(Number)
+);
+
+#Current_Insurances 테이블 생성
+Create table Current_Insurances(
+insNum int(11),
+Proprietor_ID varchar(30),
+Join_Period date,
+Expired_Period date,
+Primary key(insNum)
+);
+
+#Board 테이블 생성
+Create table Board(
+No int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ID varchar(30) NOT NULL,
+Title varchar(50) NOT NULL,
+Content text NOT NULL,
+Date date NOT NULL,
+Time time NOT NULL,
+File_name varchar(40),
+PW varchar(40) NOT NULL
+);
+
+#Chat 테이블 생성
+Create table Chat(
+No int(10) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ID varchar(30) NOT NULL,
+Content text NOT NULL,
+Date date NOT NULL,
+Time time NOT NULL
+);
+
+#Chat_Display 뷰 생성
+Create view Chat_Display as select * from Chat order by No desc limit 3;
+
+#Board_Reply 테이블 생성
+Create table Board_Reply(
+No int(10) NOT NULL,
+Content text NOT NULL,
+Date date NOT NULL,
+Time time NOT NULL,
+PRIMARY KEY(No,Date,Time)
+);

@@ -1,0 +1,18 @@
+<HTML>
+	<HEAD>
+		<TITLE>Renuew test page.</TITLE>
+	</HEAD>
+	<BODY>
+		<script>
+		setInterval("reloadFrame()",3000);
+		function reloadFrame(){
+			console.log('1');
+			document.getElementById('iframe1').contentDocument.location.reload(true);
+		}
+			
+		</script>
+		<iframe id='iframe1' name='iframe1' src="https://php-bank-czhtn.run.goorm.io/" width='1000' height='1000' scrolling='yes'></iframe>
+		<input type='text' name='text' id='text'>
+		
+	</BODY>
+</HTML>

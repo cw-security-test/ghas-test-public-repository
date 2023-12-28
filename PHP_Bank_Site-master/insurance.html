@@ -1,0 +1,120 @@
+<HTML>
+	
+	<TITLE>PHP Bank - Insurances</TITLE>
+	<HEAD>
+		<li>
+		Menu : Insurances<br>
+		</li>
+	</HEAD>
+	<BODY>
+		<div class="description"># This menu used when you need Insurance signup.<br></div>
+		
+		<form action="./insurance.php" method="post">
+		<fieldset>
+			<legend>Signup Form</legend>
+			<p>
+				<label class="title" for="insNum">Insurance Number : </label>
+				<select name="insNum" id="insNum">
+				<?php
+					include 'config/database.php';
+					$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+					if(!$conn){
+						echo "<script>alert('DB Server Connect Fail');</script>";
+						echo "<script>locastion.href='index.php?page=inquery'</script>";
+					}
+
+					$stmt=$conn->stmt_init();
+					$stmt=$conn->prepare("select Number from Insurances");
+					$stmt->execute();
+					$result=$stmt->get_result();
+
+					while($data=$result->fetch_assoc())
+					{
+						$insNum=$data['Number'];
+						echo "<option value=".$insNum.">$insNum</option>";
+					}
+				?>
+				</select></p>
+			<p>
+				<label for="fromAcc" class="title">From Account : </label>
+				<select name="fromAcc" id="fromAcc">
+					<?php
+						include 'config/database.php';
+						$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+						if(!$conn){
+							echo "<script>alert('DB Server Connect Fail');</script>";
+							echo "<script>locastion.href='index.php?page=inquery'</script>";
+						}
+
+						$stmt=$conn->stmt_init();
+						$stmt=$conn->prepare("select Account from Accounts where Proprietor_ID=? and Proprietor_Name=?");
+						$stmt->bind_param('ss', $_SESSION['user_id'], $_SESSION['user_name']);
+						$stmt->execute();
+						$result=$stmt->get_result();
+
+						while($data=$result->fetch_assoc())
+						{
+							$account=$data['Account'];
+							echo "<option value=".$account.">$account</option>";
+							
+						}
+					?>
+				</select>
+				<P>
+				<label class="title" for="accPW">Account Password : </label>
+				<input type="password" name="accPW" id="accPW" size="12">
+				<input type="submit" value="Signup">
+				</P>
+			</p>	
+		</fieldset>
+		</form>	
+		<fieldset>
+			<?php
+				$stmt=$conn->stmt_init();
+				$stmt=$conn->prepare("select * from Insurances");
+				$stmt->execute();
+				$result=$stmt->get_result();
+
+				//보험하나씩 조회
+
+				while($data=$result->fetch_assoc())
+				{
+
+					$number=$data['Number'];
+					$name=$data['Name'];
+					$detail=$data['Detail'];
+					$price=$data['Price'];
+					$period=$data['Period'];
+
+					echo "<fieldset>";
+					echo "<legend>Insurance ".$number."</legend>";
+					echo "<p>";
+					echo "<label class='title' for='number'>Insurance Number : </label>";
+					echo "<input type='text' name='number' id='number' value=$number readonly>";
+
+					echo "<label class='title' for='name'>Name : </label>";
+					echo "<textArea cols='10' rows='1' name='name' maxlength='50' readonly>$name</textArea>";
+
+					echo "<label class='title' for='detail'>Detail : </label>";
+					echo "<textArea cols='60' rows='7' name='detail' maxlength='1500' readonly>$detail</textArea>";
+
+					echo "<label class='title' for='price'>Price(won) : </label>";
+					echo "<input type='text' name='price' id='price' value=$price readonly>";
+
+					echo "<label class='title' for='period'>Period(day) : </label>";
+					echo "<input type='text' name='period' id='period' value=$period readonly>";
+
+					echo "</p>";	
+					echo "</fieldset>";
+
+				//가입누르면 Current_Insurance에 보험 상품 넘버, 유효기간, 만료일, 추가하고, Members 테이블에도 상품 추가
+						
+				}
+
+			//mysql에 트리거 까지는 무리?
+			?>	
+		</fieldset>
+	</BODY>
+</HTML>

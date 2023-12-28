@@ -1,0 +1,48 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Write</TITLE>
+	<link rel="stylesheet" type="text/css" href="style/index.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style>
+			body { font-family: Consolas, sans-serif; }
+	</style>
+	<HEAD>
+		<li>
+		Menu : QnA - Write<br>
+		</li>
+	</HEAD>
+	<BODY>
+		<form enctype="multipart/form-data" action="./board_write.php" method="post">	
+		<fieldset>
+			<legend>Write Form</legend>
+			<p>
+				<label class="title" for="title">Title : </label>
+				<input type="text" name="title" id="title" size="12">
+				
+				<label class="title" for="id">ID : </label>
+				<?php
+				echo "<input type='text' name='id' id='id' size='12' value='".$_SESSION['user_id']."' readonly>";
+				?>
+				
+				<label class="title" for="content">Content : </label>
+				<textarea cols="10" rows="10" name="content" id="content"></textarea> 
+				<!--<input type="textarea" cols="10" rows="10" name="content" id="content" size="58">-->
+				<br><br>
+				<label class="title" for="pw">File : </label>
+				<input type="file" name="file" id="file" size="12">
+				
+				<label class="title" for="password">Password : </label>
+				<input type="password" name="password" id="password" size="12"
+			</p>
+			<p>
+				<br /><input type="submit" value="Post">
+		</fieldset>
+	</BODY>
+</HTML>
+

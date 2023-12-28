@@ -1,0 +1,82 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Opening</TITLE>
+	<HEAD>
+		<li>
+		Menu : Opening<br>
+		</li>
+	</HEAD>
+	<BODY>
+		<div class="description"># This menu used when you need create account for your transfer.<br>
+		# The limit on the number of accounts is three.</div>
+		
+		<!--ready rand account number-->
+		
+		<?php
+		
+			include 'config/database.php';
+			$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+			if(!$conn){
+				echo "<script>alert('DB Server Connect Fail');</script>";
+				echo "<script>locastion.href='index.php?page=inquery'</script>";
+			}
+			
+			$getAccNum='true';
+			while($getAccNum=='true')
+			{
+				$randNum=rand(100000000001,999999999999);
+				$randNum=(string)$randNum;
+				$stmt=$conn->stmt_init();
+				$stmt=$conn->prepare("Select Account From Accounts Where Account=?");
+				$stmt->bind_param('s', $randNum);
+				$stmt->execute();
+				$result=$stmt->get_result();
+				$data=$result->fetch_assoc();
+
+				if(!$data['Account'])
+				{
+					$getAccNum='false';
+				}
+			}
+		?>
+		<!--check number of user accounts-->
+		<?php
+			$stmt=$conn->stmt_init();
+			$stmt=$conn->prepare("Select count(Account) From Accounts Where Proprietor_ID=?");
+			$stmt->bind_param('s', $_SESSION['user_id']);
+			$stmt->execute();
+			$result=$stmt->get_result();
+
+			if($result)
+			{
+				$data=$result->fetch_assoc();
+				if($data['count(Account)']==3)
+				{
+					echo "<script>alert('Already you had three accounts.');</script>";
+					echo "<script>location.href='index.php?page=lookup'</script>";
+				}
+			}
+			$stmt->close();
+			$conn->close()
+		?>
+		<form action="./opening.php" method="post">	
+		<fieldset>
+			<legend>Opening Form</legend>
+			<p>
+				<label class="title" for="accNum">Accounts Number : </label>
+				<?php echo "<input type='text' name='accNum' id='accNum' value='$randNum' readonly>" ?>
+				<label class="title" for="accPW">Password : </label>
+				<input type="password" name="accPW" id="accPW">
+				<input type="submit" value="Opening">
+			</p>	
+		</fieldset>
+	</form>
+	</BODY>
+</HTML>

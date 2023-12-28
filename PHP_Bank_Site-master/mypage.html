@@ -1,0 +1,38 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - My Page</TITLE>
+	<HEAD>
+		<li>
+		Menu : My page<br>
+		</li>
+	</HEAD>
+	<BODY>	
+		<fieldset>
+			<?php
+				include 'library/database_func.php';
+			
+				$info=getQuery1('select * from Members where ID=?','s',$_SESSION['user_id']);
+				echo "<fieldset><legend>".$info['Name']."'s Information</legend>";
+				echo "<p>";
+				echo "<lable class='title'>ID :</label>"; 
+				echo "<input type='text' value='".$info['ID']."' readonly>";
+				echo "<lable class='title'>Name :</label>"; 
+				echo "<input type='text' value='".$info['Name']."' readonly>";
+				echo "<lable class='title'>Alias :</label>"; 
+				echo "<input type='text' value='".$info['Alias']."' readonly>";
+				echo "<lable class='title'>Phone number :</label>"; 
+				echo "<input type='text' value='".$info['Phone_Number']."' readonly>";
+				echo "<lable class='title'>Insurance :</label>";
+				$insInfo=getQuery1('select * from Insurances where Number=?', 'i', (int)$info['Valid_Insurance']);
+				echo "<input type='text' value='".$insInfo['Name']."' readonly>";
+				echo "</p></fieldset>";
+			?>
+		</fieldset>
+	</BODY>
+</HTML>

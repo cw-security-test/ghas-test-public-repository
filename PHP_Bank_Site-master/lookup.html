@@ -1,0 +1,50 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Lookup</TITLE>
+	<HEAD>
+		<li>
+		Menu : Lookup Accounts<br>
+		</li>
+	</HEAD>
+	<BODY>	
+		<fieldset>
+			<?php
+				include 'config/database.php';
+				$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+			if(!$conn){
+				echo "<script>alert('DB Server Connect Fail');</script>";
+				echo "<script>locastion.href='index.php?page=inquery'</script>";
+			}
+			
+			$stmt=$conn->stmt_init();
+			$stmt=$conn->prepare("Select * From Accounts Where Proprietor_ID=? and Proprietor_Name=?");
+			$stmt->bind_param('ss', $_SESSION['user_id'], $_SESSION['user_name']);
+			$stmt->execute();
+			$result=$stmt->get_result();
+
+			$accountNum=1;
+			while($data=$result->fetch_assoc())
+			{
+				echo "<fieldset>";
+				echo "<legend>Account ".$accountNum."</legend>";
+				echo "<p>";
+				echo "<lable class='title' for='accNum'>Account ".$accountNum." Number : </label>";
+				echo "<input type='text' name='accNum' id='accNum' value='".$data['Account']."' readonly>";
+				echo "<label class='title' for='balance'>Balance : </label>";
+				echo "<input type='text' name='balance' id='balance' value='".$data['Balance']."' readonly>";
+				echo "</p>";
+				echo "</fieldset>";
+				$accountNum+=1;
+
+			}
+			?>
+		</fieldset>
+	</BODY>
+</HTML>

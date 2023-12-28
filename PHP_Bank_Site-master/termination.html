@@ -1,0 +1,53 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Termination</TITLE>
+	<HEAD>
+		<li>
+		Menu : Termination<br>
+		</li>
+	</HEAD>
+	<BODY>
+		<div class="description"># This menu used when you need delete your account.<br></div>
+		
+		<form action="./termination.php" method="post">	
+		<fieldset>
+			<legend>Termination Form</legend>
+			<p>
+				<label class="title" for="accNum">Accounts Number : </label>
+				<select name="accNum" id="accNum">
+				<?php
+					include 'config/database.php';
+					$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+					if(!$conn){
+						echo "<script>alert('DB Server Connect Fail');</script>";
+						echo "<script>locastion.href='index.php?page=inquery'</script>";
+					}
+
+					$stmt=$conn->stmt_init();
+					$stmt=$conn->prepare("select Account from Accounts where Proprietor_ID=? and Proprietor_Name=?");
+					$stmt->bind_param('ss', $_SESSION['user_id'], $_SESSION['user_name']);
+					$stmt->execute();
+					$result=$stmt->get_result();
+
+					while($data=$result->fetch_assoc())
+					{
+						$account=$data['Account'];
+						echo "<option value=".$account.">$account</option>";
+					}
+				?>
+				</select>
+				<label class="title" for="accPW">Password : </label>
+				<input type="password" name="accPW" id="accPW">
+				<input type="submit" value="Termination">
+			</p>	
+		</fieldset>
+	</form>
+	</BODY>
+</HTML>

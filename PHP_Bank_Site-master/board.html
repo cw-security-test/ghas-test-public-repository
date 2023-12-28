@@ -1,0 +1,71 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - QnA</TITLE>
+	<link rel="stylesheet" type="text/css" href="style/index.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style>
+			body { font-family: Consolas, sans-serif; }
+	</style>
+	<HEAD>
+		<li>
+		Menu : QnA<br>
+		</li>
+	</HEAD>
+	<BODY>
+	<div class="description"># This menu used when you need to answer to admin.</div><br>
+	<input class="w_button" type=button value="Write" id="amount" size="12" onClick="location.href='index.php?page=write'"><br><br>
+	<table>
+		<thead>
+			<tr>
+				<th scope="col" class="no">No.</th>
+				<th scope="col" class="title">Title</th>
+				<th scope="col" class="author">Author</th>
+				<th scope="col" class="date">Date</th>
+				<th scope="col" class="date">File</th>
+			</tr>	
+		</thead>
+		<tbody>
+			<?php
+
+				include 'config/database.php';
+				$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+				if(!$conn){
+					echo "<script>alert('DB Server Connect Fail');</script>";
+					echo "<script>locastion.href='index.php'</script>";
+				}
+				
+				$stmt=$conn->stmt_init();
+				$query="select * from Board order by No DESC";
+				$result=$conn->query($query);
+				
+				while($row=$result->fetch_assoc())
+				{
+					if($row['File_name']==''){$isfile='N';}
+					if($row['File_name']!=''){$isfile='E';}
+			?>
+			<tr>
+				<td class="no"><?php echo $row['No']?></td>
+				<?php 
+					$directPath="location.href='index.php?page=board_lookup&no=".$row['No']."'";
+					echo "<td class='title' onClick=\"".$directPath."\">".$row['Title']."</td>"; 
+				?>
+				<!--<td class='title'><?php echo $row['Title']?></td>-->
+				<td class="author"><?php echo $row['ID']?></td>
+				<td class="date"><?php echo $row['Date']?></td>
+				<td class="file"><?php echo $isfile?></td>
+			</tr>
+			<?php
+				}
+			?>
+		</tbody>
+	</table>
+	</BODY>
+</HTML>
+

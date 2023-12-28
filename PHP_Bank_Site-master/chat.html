@@ -1,0 +1,62 @@
+<HTML>
+	<!--jQuery import-->
+	<script src="./plugin/jQuery-3.5.1.min.js"></script>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	<TITLE>PHP Bank - Chat</TITLE>
+	<link rel="stylesheet" type="text/css" href="style/index.css">
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+	<style>
+			body { font-family: Consolas, sans-serif; }
+	</style>
+	<HEAD>
+		<li>
+		Menu : Chat<br>
+		</li>
+	</HEAD>
+	<BODY>
+	
+	<!-- renew chat display -->
+	<script>
+	/*2
+	var frame_c=document.getElementById('display');
+	var url="https://php-bank-czhtn.run.goorm.io/chat_display.php";
+	setInterval(function() {
+		frame_c.src=url;
+	}, 3000);
+	*/
+	
+	setInterval("reloadFrame()",10000);
+	function reloadFrame(){
+		//document.getElementById('display').contentDocument.location.reload(true);
+		$('#display').attr('src', "https://php-bank-czhtn.run.goorm.io/chat_display.php");
+	}
+	
+	function scrollDown(){
+		document.getElementById('display').contentWindow.scrollTo(0,999999);
+	}
+	</script>
+		
+	<div class="description"># This menu used when you need to chatting with other member.</div><br>
+	<iframe class='frame' id='display' name='display' src="https://php-bank-czhtn.run.goorm.io/chat_display.php" width='1000' height='300' scrolling='yes' onLoad='scrollDown()' ></iframe>
+		<form action="./chat_send.php" method="get">
+			<div class="chat">
+				<?php
+					echo "<input type='text' name='id' id='id' value='".$_SESSION['user_id']."' readonly>";
+				?>
+				<div class="chat_content">
+				<?php
+					echo "<input type='text' name='content' id='content'>";
+				?>
+				</div>
+				<input type="submit" value="send">
+			</div>
+		</form>
+	</BODY>
+</HTML>
+

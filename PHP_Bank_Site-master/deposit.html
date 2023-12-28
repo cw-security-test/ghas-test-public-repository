@@ -1,0 +1,77 @@
+<HTML>
+	<?php
+	if(!isset($_SESSION['user_id']) OR !isset($_SESSION['user_name']))
+	{
+		echo "<script>alert('Access Denied. Signin please.');</script>";
+		echo "<script>location.href='index.php?page=signin'</script>";
+	}
+	?>
+	
+	<TITLE>PHP Bank - Deposit</TITLE>
+	<HEAD>
+		<li>
+		Menu : Deposit<br>
+		</li>
+	</HEAD>
+	<BODY>
+	<div class="description"># This menu used when you deposit to your account.</div>
+		
+	<form action="./deposit.php" method="POST">	
+		<fieldset>
+			<legend>Deposit Form</legend>
+				<p>
+				<label for="fromAcc" class="title">From Account : </label>
+				<select name="fromAcc" id="fromAcc">
+					<?php
+						include 'config/database.php';
+						$conn = mysqli_connect( $host, $user, $pw, $dbName);
+
+						if(!$conn){
+							echo "<script>alert('DB Server Connect Fail');</script>";
+							echo "<script>locastion.href='index.php?page=inquery'</script>";
+						}
+
+						$stmt=$conn->stmt_init();
+						$stmt=$conn->prepare("select Account from Accounts where Proprietor_ID=? and Proprietor_Name=?");
+						$stmt->bind_param('ss', $_SESSION['user_id'], $_SESSION['user_name']);
+						$stmt->execute();
+						$result=$stmt->get_result();
+
+						while($data=$result->fetch_assoc())
+						{
+							$account=$data['Account'];
+							echo "<option value=".$account.">$account</option>";
+							
+						}
+					?>
+				</select>
+				</p>
+				<label class="title" for="amount">Amount : </label>
+				<input type="text" name="amount" id="amount" size="12">
+				<br /><input type="submit" value="Transfer">
+			</p>
+		</fieldset>
+	</form>
+	
+	
+	<?php /*
+				echo "<div class='description'>";
+				$stmt=$conn->stmt_init();
+				$stmt=$conn->prepare("Select * from Log where ID=?");
+				$stmt->bind_param('s', $_SESSION['user_id']);
+				$stmt->execute();
+				$result=$stmt->get_result();
+
+				while($data=$result->fetch_assoc())
+				{
+					$log=str_replace('[LOG] ','', $data['Log']);
+					echo "<br>".$data['date']." ".$data['time']." ".$log." by ".$data['ID'];
+				}
+
+				$stmt->close();
+				$conn->close();
+				echo "</div>";
+	*/ ?>
+	</BODY>
+</HTML>
+
